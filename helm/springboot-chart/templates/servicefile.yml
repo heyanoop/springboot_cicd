@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: springboot-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: springboot-dep
   ports:
-    - port: 80
+    - port: 8080
       targetPort: 8080
-      nodePort: 30007
