@@ -57,17 +57,12 @@ pipeline {
         }
 
         stage('Modify Helm Chart') {
-    steps {
-        script {
-            try {
-                sh "sed -i 's/tag: .*/tag: '${DOCKER_TAG}'/' helm/springboot-chart/values.yaml"
-            } catch (err) {
-                echo "Error modifying Helm chart: ${err}"
-                throw err
-            }
-        }
-    }
-}
+            steps {
+                script {
+                    sh "sed -i 's/tag: .*/tag: '${DOCKER_TAG}'/' helm/springboot-chart/values.yaml"   
+       	        }
+    	    }
+	}
         
         stage('Package Helm Chart') {
             steps {
@@ -81,6 +76,9 @@ pipeline {
             steps {
                 script {
                     sh """
+                    	if [ -d "helm-repo" ]; then
+                            rm -rf helm-repo
+                        fi
                         git config --global user.email "anoopsabu@live.com"
                         git config --global user.name "anoop"
                         git clone https://github.com/heyanoop/helm-repo.git
