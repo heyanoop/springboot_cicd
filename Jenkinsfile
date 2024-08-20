@@ -26,18 +26,7 @@ pipeline {
                 sh "mvn test"
             }
         }
-        stage('Code Analysis') {
-            steps {
-                withSonarQubeEnv("sonar-server") {
-                    sh '''
-                    $SCANNER_HOME/bin/sonar-scanner \
-                    -D sonar.projectName=spring-boot-hello-world \
-                    -D sonar.java.binaries=target/classes \
-                    -D sonar.projectKey=spring-boot-hello-world
-                    '''
-                }
-            }
-        }
+       
         stage('Docker Login & Build') {
             steps {
                 script {
