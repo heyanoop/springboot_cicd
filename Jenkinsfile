@@ -57,12 +57,17 @@ pipeline {
         }
 
         stage('Modify Helm Chart') {
-            steps {
-                script {
-                    sh "sed -i 's/tag: .*/tag: "${DOCKER_TAG}"/' helm/springboot-chart/values.yaml"
-                }
+    steps {
+        script {
+            try {
+                sh "sed -i 's/tag: .*/tag: '${DOCKER_TAG}'/' helm/springboot-chart/values.yaml"
+            } catch (err) {
+                echo "Error modifying Helm chart: ${err}"
+                throw err
             }
         }
+    }
+}
         
         stage('Package Helm Chart') {
             steps {
