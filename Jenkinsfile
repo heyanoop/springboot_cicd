@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Git checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/BuntyRaghani/spring-boot-hello-world.git'
+                git branch: 'main', url: 'https://github.com/heyanoop/springboot_cicd.git'
             }
         }
         stage('Maven Build') {
