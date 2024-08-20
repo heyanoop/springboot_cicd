@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         SCANNER_HOME = tool "sonar-scanner"
-        DOCKER_IMAGE = 'your-docker-hub-username/spring-boot-hello-world'
+        DOCKER_IMAGE = 'heyanoop/spring-boot-hello-world'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         DOCKER_CREDENTIALS = credentials('docker-hub')
     }
