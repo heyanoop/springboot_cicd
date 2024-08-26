@@ -9,7 +9,7 @@ pipeline {
         DOCKER_IMAGE = 'heyanoop/spring-boot-hello-world'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         DOCKER_CREDENTIALS = credentials('docker-hub')
-        GIT_ACCESS_TOKEN = credentials('github-access-token') 
+        AWS_CREDENTIALS = credentials('aws-ecr-key') 
     }
     stages {
         stage('Git Checkout') {
@@ -82,17 +82,13 @@ pipeline {
             steps {
                 script {
                     sh """
-                    	if [ -d "helm-repo" ]; then
-                            rm -rf helm-repo
-                        fi
-                        git config --global user.email "anoopsabu@live.com"
-                        git config --global user.name "anoop"
-                        git clone https://github.com/heyanoop/helm-repo.git
+                    	export AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}
+                	export AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}
+                	aws configure set region ap-south-1
+                        aws ecr get-login-password --region ap-south-1 | helm registry login 194722397084.dkr.ecr.ap-south-1.amazonaws.com --username AWS --password-stdin
                         cp springboot-chart-0.1.0.tgz helm-repo/
                         cd helm-repo
-                        git add .
-                        git commit -m "Update Helm chart to version ${DOCKER_TAG}"
-                        git push https://${GIT_ACCESS_TOKEN}@github.com/heyanoop/helm-repo.git
+                        helm push test-0.1.0.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
                     """
                 }
             }
