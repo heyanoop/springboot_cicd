@@ -81,11 +81,11 @@ pipeline {
             steps {
                 script {
                     sh """
-                    	export AWS_ACCESS_KEY_ID=${	}
+                    	export AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}
                 	export AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}
                 	aws configure set region ap-south-1
                         aws ecr get-login-password --region ap-south-1 | helm registry login 194722397084.dkr.ecr.ap-south-1.amazonaws.com --username AWS --password-stdin
-                        mkdir helm-repo	
+                        mkdir helm-repo
                         cp springboot-chart-0.1.0.tgz helm-repo/
                         cd helm-repo
                         helm push springboot-chart-0.1.0.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
