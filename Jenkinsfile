@@ -5,10 +5,9 @@ pipeline {
         maven 'maven'
     }
     environment {
-        SCANNER_HOME = tool "sonar-scanner"
         DOCKER_IMAGE = 'heyanoop/spring-boot-hello-world'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
-        DOCKER_CREDENTIALS = credentials('docker-hub')
+        DOCKER_CREDENTIALS = credentials('dockerhub-token')
         AWS_CREDENTIALS = credentials('aws-ecr-key') 
     }
     stages {
