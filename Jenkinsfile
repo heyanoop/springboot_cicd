@@ -81,10 +81,11 @@ pipeline {
         stage('Push Helm Chart to GitHub') {
             steps {
                 script {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr']])
                     def chartVersion = "${env.BUILD_NUMBER}"
                     sh """
-                        export AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}
-                        export AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}
+                        aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                        aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
                         aws configure set region ap-south-1
                         aws ecr get-login-password --region ap-south-1 | helm registry login 194722397084.dkr.ecr.ap-south-1.amazonaws.com --username AWS --password-stdin
                         mkdir helm-repo
