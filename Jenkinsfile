@@ -64,15 +64,16 @@ pipeline {
         stage('Modify Helm Chart') {
             steps {
                 script {
-                    sh "sed -i 's/tag: .*/tag: '${DOCKER_TAG}'/' helm/springboot-chart/values.yaml"   
-       	        }
-    	    }
-	}
+                    sh "sed -i 's/tag: .*/tag: '${DOCKER_TAG}'/' helm/springboot-chart/values.yaml"
+                }
+            }
+        }
         
         stage('Package Helm Chart') {
             steps {
                 script {
-                    sh "helm package helm/springboot-chart -d ."
+                    def chartVersion = "${env.BUILD_NUMBER}"
+                    sh "helm package helm/springboot-chart --version ${chartVersion} -d ."
                 }
             }
         }
@@ -80,16 +81,18 @@ pipeline {
         stage('Push Helm Chart to GitHub') {
             steps {
                 script {
+                    def chartVersion = "${env.BUILD_NUMBER}"
                     sh """
-                    	export AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}
-                	export AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}
-                	aws configure set region ap-south-1
+                        export AWS_ACCESS_KEY_ID=${AWS_CREDENTIALS_USR}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_CREDENTIALS_PSW}
+                        aws configure set region ap-south-1
                         aws ecr get-login-password --region ap-south-1 | helm registry login 194722397084.dkr.ecr.ap-south-1.amazonaws.com --username AWS --password-stdin
                         mkdir helm-repo
-                        cp springboot-chart-0.1.0.tgz helm-repo/
+                        cp springboot-chart-${chartVersion}.tgz helm-repo/
                         cd helm-repo
-                        helm push springboot-chart-0.1.0.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
+                        helm push springboot-chart-${chartVersion}.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
                     """
+                }
             }
         }
     }
