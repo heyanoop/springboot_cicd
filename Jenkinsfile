@@ -8,7 +8,7 @@ pipeline {
         DOCKER_IMAGE = 'heyanoop/spring-boot-hello-world'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         DOCKER_CREDENTIALS = credentials('dockerhub-token')
-        AWS_CREDENTIALS = credentials('aws-ecr-key') 
+        AWS_CREDENTIALS = credentials('aws-ecr') 
     }
     stages {
         stage('Git Checkout') {
@@ -90,7 +90,6 @@ pipeline {
                         cd helm-repo
                         helm push springboot-chart-0.1.0.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
                     """
-                }
             }
         }
     }
