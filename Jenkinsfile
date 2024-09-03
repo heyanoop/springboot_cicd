@@ -81,18 +81,19 @@ pipeline {
         stage('Push Helm Chart to GitHub') {
             steps {
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr']])
-                    def chartVersion = "${env.BUILD_NUMBER}"
-                    sh """
-                        aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
-                        aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
-                        aws configure set region ap-south-1
-                        aws ecr get-login-password --region ap-south-1 | helm registry login 194722397084.dkr.ecr.ap-south-1.amazonaws.com --username AWS --password-stdin
-                        mkdir helm-repo
-                        cp springboot-chart-${chartVersion}.tgz helm-repo/
-                        cd helm-repo
-                        helm push springboot-chart-${chartVersion}.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
-                    """
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-ecr']]) {
+                        def chartVersion = "${env.BUILD_NUMBER}"
+                        sh """
+                            aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                            aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+                            aws configure set region ap-south-1
+                            aws ecr get-login-password --region ap-south-1 | helm registry login 194722397084.dkr.ecr.ap-south-1.amazonaws.com --username AWS --password-stdin
+                            mkdir helm-repo
+                            cp springboot-chart-${chartVersion}.tgz helm-repo/
+                            cd helm-repo
+                            helm push springboot-chart-${chartVersion}.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
+                        """
+                    }
                 }
             }
         }
