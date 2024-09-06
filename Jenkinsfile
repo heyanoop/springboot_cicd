@@ -92,6 +92,7 @@ pipeline {
                             cp springboot-chart-${chartVersion}.tgz helm-repo/
                             cd helm-repo
                             helm push springboot-chart-${chartVersion}.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
+                            cd ..
                         """
                     }
                 }
