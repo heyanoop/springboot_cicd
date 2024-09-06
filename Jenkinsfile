@@ -90,8 +90,9 @@ pipeline {
                             aws ecr get-login-password --region ap-south-1 | helm registry login 194722397084.dkr.ecr.ap-south-1.amazonaws.com --username AWS --password-stdin
                             mkdir helm-rep
                             cp springboot-chart-${chartVersion}.tgz helm-rep/
-                            cd helm-rep
+                            cd helm-repo
                             helm push springboot-chart-${chartVersion}.tgz oci://194722397084.dkr.ecr.ap-south-1.amazonaws.com
+                            rm -rf helm-repo
                         """
                     }
                 }
